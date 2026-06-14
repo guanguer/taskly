@@ -5,7 +5,7 @@ import { ShoppingListItem } from "./components/ShoppingListItem";
 export default function App() {
   return (
     <View style={styles.container}>
-      <ShoppingListItem name="Cappuccino" />
+      <ShoppingListItem name="Cappuccino" isCompleted />
       <ShoppingListItem name="Latte" />
       <ShoppingListItem name="Mocha" />
     </View>
