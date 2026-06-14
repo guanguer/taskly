@@ -1,4 +1,5 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { theme } from "../theme";
 
 type Props = {
@@ -39,15 +40,12 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
       >
         {name}
       </Text>
-      <TouchableOpacity
-        onPress={handleDelete}
-        style={[
-          styles.button,
-          isCompleted ? styles.completedButton : undefined,
-        ]}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.buttonText}>Delete</Text>
+      <TouchableOpacity onPress={handleDelete} activeOpacity={0.8}>
+        <Ionicons
+          name="close-circle"
+          size={24}
+          color={isCompleted ? theme.colorGray : theme.colorRed}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -56,7 +54,7 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
 const styles = StyleSheet.create({
   itemContainer: {
     paddingVertical: 16,
-    paddingHorizontal: 8,
+    paddingHorizontal: 18,
     borderBottomColor: theme.colorCerulean,
     borderBottomWidth: 1,
     flexDirection: "row",
@@ -75,19 +73,5 @@ const styles = StyleSheet.create({
     textDecorationLine: "line-through",
     textDecorationColor: theme.colorGray,
     color: theme.colorGray,
-  },
-  button: {
-    backgroundColor: theme.colorBlack,
-    padding: 8,
-    borderRadius: 6,
-  },
-  buttonText: {
-    color: theme.colorWhite,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    letterSpacing: 1,
-  },
-  completedButton: {
-    backgroundColor: theme.colorGray,
   },
 });
