@@ -1,10 +1,10 @@
 import { Text, View, StyleSheet } from "react-native";
-import { theme } from "../theme";
+import { theme } from "../../theme";
 
-export default function ConterScreen() {
+export default function HistoryScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Counter</Text>
+      <Text style={styles.text}>History</Text>
     </View>
   );
 }
@@ -17,11 +17,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colorWhite,
   },
   text: {
-    fontSize: 24,
-  },
-  link: {
-    textAlign: "center",
-    marginBottom: 18,
     fontSize: 24,
   },
 });
