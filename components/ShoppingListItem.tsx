@@ -40,7 +40,11 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
       >
         {name}
       </Text>
-      <TouchableOpacity onPress={handleDelete} activeOpacity={0.8}>
+      <TouchableOpacity
+        disabled={isCompleted}
+        onPress={handleDelete}
+        activeOpacity={0.8}
+      >
         <Ionicons
           name="close-circle"
           size={24}
