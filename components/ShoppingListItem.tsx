@@ -4,8 +4,10 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  View,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Entypo from "@expo/vector-icons/Entypo";
 import { theme } from "../theme";
 
 type Props = {
@@ -46,14 +48,22 @@ export function ShoppingListItem({
       ]}
       onPress={onToggleComplete}
     >
-      <Text
-        style={[
-          styles.itemText,
-          isCompleted ? styles.completedText : undefined,
-        ]}
-      >
-        {name}
-      </Text>
+      <View style={styles.row}>
+        <Entypo
+          name={isCompleted ? "check" : "circle"}
+          size={24}
+          color={isCompleted ? theme.colorGray : theme.colorCerulean}
+        />
+        <Text
+          style={[
+            styles.itemText,
+            isCompleted ? styles.completedText : undefined,
+          ]}
+          numberOfLines={1}
+        >
+          {name}
+        </Text>
+      </View>
       <TouchableOpacity
         disabled={isCompleted}
         onPress={handleDelete}
@@ -86,10 +96,17 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 18,
     fontWeight: 200,
+    flex: 1,
   },
   completedText: {
     textDecorationLine: "line-through",
     textDecorationColor: theme.colorGray,
     color: theme.colorGray,
+  },
+  row: {
+    flexDirection: "row",
+    gap: 8,
+    flex: 1,
+    alignItems: "center",
   },
 });

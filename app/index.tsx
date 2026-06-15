@@ -8,6 +8,7 @@ type ShoppingListItemType = {
   name: string;
   completeAtTimestamp?: number;
   isCompleted?: boolean;
+  lastUpdatedTimestamp: number;
 };
 
 const initialList: ShoppingListItemType[] = [];
@@ -19,7 +20,11 @@ export default function App() {
   const handleSubmit = () => {
     if (value) {
       const newShoppingList: ShoppingListItemType[] = [
-        { id: new Date().toISOString(), name: value },
+        {
+          id: new Date().toISOString(),
+          name: value,
+          lastUpdatedTimestamp: Date.now(),
+        },
         ...shoppingList,
       ];
       setShoppingList(newShoppingList);
@@ -37,6 +42,7 @@ export default function App() {
       if (item.id === id) {
         return {
           ...item,
+          lastUpdatedTimestamp: Date.now(),
           completeAtTimestamp: item.completeAtTimestamp
             ? undefined
             : Date.now(),
@@ -48,7 +54,7 @@ export default function App() {
   };
   return (
     <FlatList
-      data={shoppingList}
+      data={orderShoppingList(shoppingList)}
       renderItem={({ item }) => {
         return (
           <ShoppingListItem
@@ -81,11 +87,31 @@ export default function App() {
   );
 }
 
+function orderShoppingList(shoppingList: ShoppingListItemType[]) {
+  return shoppingList.sort(
+    (item1: ShoppingListItemType, item2: ShoppingListItemType) => {
+      if (item1.completeAtTimestamp && item2.completeAtTimestamp) {
+        return item2.completeAtTimestamp - item1.completeAtTimestamp;
+      }
+      if (item1.completeAtTimestamp && !item2.completeAtTimestamp) {
+        return 1;
+      }
+      if (!item1.completeAtTimestamp && item2.completeAtTimestamp) {
+        return -1;
+      }
+      if (!item1.completeAtTimestamp && !item2.completeAtTimestamp) {
+        return item2.lastUpdatedTimestamp - item1.lastUpdatedTimestamp;
+      }
+      return 0;
+    },
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colorWhite,
-    padding: 12,
+    paddingVertical: 12,
   },
   contentContainer: {
     paddingBottom: 24,
