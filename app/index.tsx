@@ -6,6 +6,7 @@ import { ShoppingListItem } from "../components/ShoppingListItem";
 type ShoppingListItemType = {
   id: string;
   name: string;
+  completeAtTimestamp?: number;
   isCompleted?: boolean;
 };
 
@@ -25,12 +26,37 @@ export default function App() {
       setValue("");
     }
   };
+  const handleDelete = (id: string) => {
+    const newShoppingList: ShoppingListItemType[] = shoppingList.filter(
+      (item) => item.id !== id,
+    );
+    setShoppingList(newShoppingList);
+  };
+  const handleToggleComplete = (id: string) => {
+    const newShoppingList = shoppingList.map((item) => {
+      if (item.id === id) {
+        return {
+          ...item,
+          completeAtTimestamp: item.completeAtTimestamp
+            ? undefined
+            : Date.now(),
+        };
+      }
+      return item;
+    });
+    setShoppingList(newShoppingList);
+  };
   return (
     <FlatList
       data={shoppingList}
       renderItem={({ item }) => {
         return (
-          <ShoppingListItem name={item.name} isCompleted={item.isCompleted} />
+          <ShoppingListItem
+            name={item.name}
+            isCompleted={Boolean(item.completeAtTimestamp)}
+            onDelete={() => handleDelete(item.id)}
+            onToggleComplete={() => handleToggleComplete(item.id)}
+          />
         );
       }}
       ListEmptyComponent={

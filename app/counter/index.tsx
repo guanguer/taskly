@@ -19,9 +19,4 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 24,
   },
-  link: {
-    textAlign: "center",
-    marginBottom: 18,
-    fontSize: 24,
-  },
 });
