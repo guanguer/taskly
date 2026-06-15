@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, TextInput, ScrollView } from "react-native";
+import { StyleSheet, TextInput, FlatList, View, Text } from "react-native";
 import { theme } from "../theme";
 import { ShoppingListItem } from "../components/ShoppingListItem";
 
@@ -9,11 +9,7 @@ type ShoppingListItemType = {
   isCompleted?: boolean;
 };
 
-const initialList: ShoppingListItemType[] = [
-  { id: "1", name: "Coffee" },
-  { id: "2", name: "Tea" },
-  { id: "3", name: "Milk" },
-];
+const initialList: ShoppingListItemType[] = [];
 
 export default function App() {
   const [value, setValue] = useState("");
@@ -30,27 +26,32 @@ export default function App() {
     }
   };
   return (
-    <ScrollView
+    <FlatList
+      data={shoppingList}
+      renderItem={({ item }) => {
+        return (
+          <ShoppingListItem name={item.name} isCompleted={item.isCompleted} />
+        );
+      }}
+      ListEmptyComponent={
+        <View style={styles.emptyListContainer}>
+          <Text>Your shopping list is empty</Text>
+        </View>
+      }
+      ListHeaderComponent={
+        <TextInput
+          placeholder="E.g. Coffee"
+          style={styles.textInput}
+          value={value}
+          onChangeText={setValue}
+          returnKeyType="done"
+          onSubmitEditing={handleSubmit}
+        />
+      }
+      stickyHeaderIndices={[0]}
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
-      stickyHeaderIndices={[0]}
-    >
-      <TextInput
-        placeholder="E.g. Coffee"
-        style={styles.textInput}
-        value={value}
-        onChangeText={setValue}
-        returnKeyType="done"
-        onSubmitEditing={handleSubmit}
-      />
-      {shoppingList.map((item: ShoppingListItemType) => (
-        <ShoppingListItem
-          key={item.id}
-          name={item.name}
-          isCompleted={item.isCompleted}
-        />
-      ))}
-    </ScrollView>
+    />
   );
 }
 
@@ -62,6 +63,11 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingBottom: 24,
+  },
+  emptyListContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 18,
   },
   textInput: {
     borderColor: theme.colorLightGray,
