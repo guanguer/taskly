@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, TextInput, FlatList, View, Text } from "react-native";
 import { theme } from "../theme";
 import { ShoppingListItem } from "../components/ShoppingListItem";
+import { getFromStorage, saveToStorage } from "../utils/storage";
+
+const storageKey = "taskly-shopping-list";
 
 type ShoppingListItemType = {
   id: string;
@@ -17,6 +20,17 @@ export default function App() {
   const [value, setValue] = useState("");
   const [shoppingList, setShoppingList] =
     useState<ShoppingListItemType[]>(initialList);
+
+  useEffect(() => {
+    const fetchInitial = async () => {
+      const data = await getFromStorage(storageKey);
+      if (data) {
+        setShoppingList(data);
+      }
+    };
+    fetchInitial();
+  }, []);
+
   const handleSubmit = () => {
     if (value) {
       const newShoppingList: ShoppingListItemType[] = [
@@ -28,6 +42,7 @@ export default function App() {
         ...shoppingList,
       ];
       setShoppingList(newShoppingList);
+      saveToStorage(storageKey, newShoppingList);
       setValue("");
     }
   };
@@ -36,6 +51,7 @@ export default function App() {
       (item) => item.id !== id,
     );
     setShoppingList(newShoppingList);
+    saveToStorage(storageKey, newShoppingList);
   };
   const handleToggleComplete = (id: string) => {
     const newShoppingList = shoppingList.map((item) => {
@@ -51,6 +67,7 @@ export default function App() {
       return item;
     });
     setShoppingList(newShoppingList);
+    saveToStorage(storageKey, newShoppingList);
   };
   return (
     <FlatList
