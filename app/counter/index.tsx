@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import {
   Text,
   View,
@@ -5,16 +6,19 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  useWindowDimensions,
 } from "react-native";
+import { Duration, intervalToDuration, isBefore } from "date-fns";
+import * as Haptics from "expo-haptics";
+import ConfettiCannon from "react-native-confetti-cannon";
 import * as Notifications from "expo-notifications";
 import { theme } from "../../theme";
 import { registerForPushNotificationsAsync } from "../../utils/registerForPushNotificationsAsync";
-import { useEffect, useState } from "react";
-import { Duration, intervalToDuration, isBefore } from "date-fns";
+
 import { TimeSegment } from "../../components/TimeSegment";
 import { getFromStorage, saveToStorage } from "../../utils/storage";
 
-const frequency = 10 * 1000;
+const frequency = 14 * 24 * 60 * 60 * 1000;
 
 export const countdownStorageKey = "taskly-countdown";
 
@@ -29,6 +33,8 @@ type CountdownStatus = {
 };
 
 export default function ConterScreen() {
+  const { width } = useWindowDimensions();
+  const confettiRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [countdownState, setCountdownState] =
     useState<PersitedCountdownState>();
@@ -67,12 +73,14 @@ export default function ConterScreen() {
     };
   }, [lastCompletedTimestamp]);
   const scheduleNotification = async () => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    confettiRef?.current?.start();
     let pushNotificationId;
     const result = await registerForPushNotificationsAsync();
     if (result === "granted") {
       pushNotificationId = await Notifications.scheduleNotificationAsync({
         content: {
-          title: "The thing is due!",
+          title: "Time to wash the car! 🚗",
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
@@ -122,7 +130,7 @@ export default function ConterScreen() {
             status.isOverdue ? styles.whiteText : undefined,
           ]}
         >
-          Thing overdue by
+          Car wash overdue by
         </Text>
       ) : (
         <Text
@@ -131,7 +139,7 @@ export default function ConterScreen() {
             status.isOverdue ? styles.whiteText : undefined,
           ]}
         >
-          Thing due in
+          Car wash due in
         </Text>
       )}
       <View style={styles.row}>
@@ -161,8 +169,15 @@ export default function ConterScreen() {
         activeOpacity={8}
         onPress={scheduleNotification}
       >
-        <Text style={styles.buttonText}>I`ve done the thing!</Text>
+        <Text style={styles.buttonText}>I`ve washed the car!</Text>
       </TouchableOpacity>
+      <ConfettiCannon
+        ref={confettiRef}
+        count={50}
+        origin={{ x: width / 2, y: -20 }}
+        autoStart={false}
+        fadeOut={true}
+      />
     </View>
   );
 }
